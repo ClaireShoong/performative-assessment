@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>자기소개 수행평가 연습 | 신진과학기술고</title>
+<style>
+:root{
+  --bg:#f8f6f2;--card:#fff;--border:#f0e6d0;
+  --pri:#e67700;--pri-dk:#d96500;--pri-lt:#fff3bf;
+  --txt:#2d2416;--sub:#7a6a55;
+  --ok:#2f9e44;--ok-bg:#ebfbee;
+  --err:#c92a2a;--err-bg:#fff5f5;
+  --blue:#4263eb;--blue-lt:#eef2ff;
+  --grn:#2f9e44;--grn-lt:#ebfbee;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Apple SD Gothic Neo','Noto Sans KR','Segoe UI',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;line-height:1.6}
+
+.site-header{background:linear-gradient(135deg,#e67700,#f59f00);color:#fff;padding:28px 20px 22px;text-align:center}
+.site-header h1{font-size:1.5rem;font-weight:800;letter-spacing:-.5px;margin-bottom:4px}
+.site-header p{font-size:.86rem;opacity:.9}
+
+.wrap{max-width:700px;margin:0 auto;padding:20px 14px 80px}
+
+/* 채점 배너 */
+.score-banner{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px}
+.sc-item{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 10px;text-align:center}
+.sc-item.hi{background:var(--pri-lt);border-color:#ffe066}
+.sc-label{font-size:.68rem;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.3px;margin-bottom:4px}
+.sc-val{font-size:1.05rem;font-weight:800;color:var(--pri)}
+.sc-sub{font-size:.72rem;color:var(--sub);margin-top:2px}
+
+/* 진행 점 */
+.prog-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px 16px 16px;margin-bottom:16px}
+.prog-top{display:flex;justify-content:space-between;font-size:.8rem;font-weight:700;color:var(--sub);margin-bottom:11px}
+.sdots{display:flex;gap:6px;justify-content:center}
+.sdot{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;transition:transform .2s}
+.sdot:hover{transform:translateY(-2px)}
+.dot-c{width:34px;height:34px;border-radius:50%;border:2px solid var(--border);background:#f5f0e8;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;color:#bbb;transition:all .2s}
+.dot-l{font-size:.58rem;font-weight:700;color:#bbb;text-align:center;max-width:52px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sdot.done .dot-c{background:var(--ok-bg);border-color:#69db7c;color:var(--ok)}
+.sdot.done .dot-l{color:var(--ok)}
+.sdot.active .dot-c{background:var(--pri-lt);border-color:var(--pri);color:var(--pri);transform:scale(1.15);box-shadow:0 4px 12px rgba(230,119,0,.22)}
+.sdot.active .dot-l{color:var(--pri)}
+
+/* 섹션 카드 */
+.sect-card{background:var(--card);border:1px solid var(--border);border-radius:20px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.06);margin-bottom:14px}
+.card-head{padding:13px 17px;background:linear-gradient(to right,#fff9f0,var(--card));border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sect-badge{background:var(--pri);color:#fff;font-size:.7rem;font-weight:700;padding:4px 11px;border-radius:20px;white-space:nowrap}
+.sect-eval{font-size:.74rem;font-weight:700;color:var(--sub);background:#f9f7f2;border:1px solid var(--border);padding:3px 9px;border-radius:11px}
+.sect-ttl{font-size:.9rem;font-weight:700;color:var(--txt);flex:1}
+.done-badge{display:none;align-items:center;gap:4px;background:var(--ok-bg);border:1px solid #a3d9b0;border-radius:30px;padding:3px 10px;font-size:.73rem;font-weight:700;color:var(--ok)}
+.done-badge.show{display:flex}
+
+/* 탭 */
+.stabs{display:flex;border-bottom:1px solid var(--border)}
+.stab{flex:1;padding:10px 5px;text-align:center;font-size:.77rem;font-weight:700;color:var(--sub);cursor:pointer;border:none;background:none;transition:all .2s;border-bottom:3px solid transparent;font-family:inherit}
+.stab.ck::after{content:' ✓';color:var(--ok)}
+.stab.s1.on{color:var(--blue);border-bottom-color:var(--blue);background:var(--blue-lt)}
+.stab.s2.on{color:var(--pri);border-bottom-color:var(--pri);background:var(--pri-lt)}
+.stab.s3.on{color:var(--grn);border-bottom-color:var(--grn);background:var(--grn-lt)}
+
+.sbody{padding:20px 17px 16px}
+
+/* Stage 1 */
+.lrn-ko{font-size:.96rem;font-weight:600;color:var(--txt);background:#f9f7f2;border-left:4px solid var(--pri);border-radius:0 10px 10px 0;padding:10px 13px;margin-bottom:11px;line-height:1.9}
+.lrn-en{font-size:1.08rem;font-weight:700;color:#1a3a6b;background:var(--blue-lt);border-radius:10px;padding:12px 15px;margin-bottom:11px;line-height:1.9}
+.bw{background:var(--pri-lt);color:var(--pri);padding:1px 6px;border-radius:4px}
+.tts-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 15px;background:#f5f3ff;border:1px solid #ddd6fe;border-radius:30px;color:#6d28d9;font-size:.83rem;font-weight:700;cursor:pointer;transition:all .15s;font-family:inherit;margin-bottom:12px}
+.tts-btn:hover{background:#ede9fe;transform:translateY(-1px)}
+.tip-box{background:var(--pri-lt);border:1px solid #ffe066;border-radius:10px;padding:10px 13px;font-size:.84rem;color:#5c4a00;line-height:1.75}
+
+/* 연습 및 초안 영역 */
+.binp{display:inline-block;padding:2px 7px;border:none;border-bottom:2px solid var(--pri);background:transparent;font-size:.94rem;font-family:inherit;font-weight:700;color:var(--pri-dk);text-align:center;outline:none}
+.binp.ok{border-bottom-color:var(--ok);color:var(--ok);background:var(--ok-bg)}
+.binp.ng{border-bottom-color:var(--err);color:var(--err);background:var(--err-bg)}
+
+.wc-bar{display:flex;align-items:center;gap:10px;padding:13px 17px;border-top:1px solid var(--border);background:#f9f7f2;flex-wrap:wrap}
+.wc-num{font-size:1.6rem;font-weight:800;color:var(--pri)}
+.wc-grade{font-size:.84rem;font-weight:800;padding:4px 12px;border-radius:20px;margin-left:auto}
+.wc-A{background:var(--ok-bg);color:var(--ok)}
+.wc-E{background:#fff1f2;color:#c92a2a}
+
+.ds-area{width:100%;min-height:58px;padding:8px 11px;border:1.5px solid var(--border);border-radius:10px;font-size:.9rem;font-family:inherit;background:#fdfbf7;color:var(--txt);resize:vertical;line-height:1.7;margin-bottom:10px}
+
+.stage-nav{display:flex;gap:8px;align-items:center;justify-content:space-between;padding:12px 17px;border-top:1px solid var(--border);background:#fdfbf7}
+.nbtn{padding:8px 15px;border-radius:9px;border:1px solid var(--border);font-size:.83rem;font-weight:700;cursor:pointer;background:#fff;color:var(--sub)}
+.nbtn.fwd{background:var(--pri);color:#fff;border-color:var(--pri)}
+
+.summary{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:28px 20px;text-align:center;margin-top:14px;display:none}
+.summary.show{display:block}
+
+/* 선택 버튼 */
+.abtn{padding:9px 13px;border-radius:10px;border:1.5px solid var(--border);font-size:.82rem;font-weight:700;cursor:pointer;background:#fff;color:var(--txt);font-family:inherit;transition:all .15s}
+.abtn:hover{border-color:var(--pri);color:var(--pri);transform:translateY(-1px)}
+.abtn-s{background:#fff;color:var(--txt)}
+.abtn-p{background:var(--pri);color:#fff;border-color:var(--pri);box-shadow:0 3px 10px rgba(230,119,0,.25)}
+.abtn-g{background:var(--ok);color:#fff;border-color:var(--ok);font-size:.92rem;font-weight:800}
+.abtn-g:hover{background:#228f3b;border-color:#228f3b;color:#fff}
+.opt-grp{margin-bottom:20px}
+.opt-grp-ttl{font-weight:800;color:var(--sub);margin-bottom:10px;font-size:.86rem;display:flex;align-items:center;gap:6px}
+.opt-grp-ttl::before{content:"";display:inline-block;width:4px;height:14px;background:var(--pri);border-radius:2px}
+.opt-wrap{display:flex;gap:7px;flex-wrap:wrap}
+.menu-guide{background:var(--blue-lt);border:1px solid #c7d2fe;border-radius:10px;padding:10px 13px;font-size:.82rem;color:#1e40af;margin-bottom:16px;line-height:1.6}
+
+/* 연습 영역 */
+.fill-line{font-size:1.05rem;line-height:2.4;margin-bottom:14px;color:var(--txt)}
+.scr-ans{min-height:46px;padding:9px;border:1.5px dashed var(--pri);border-radius:10px;background:#fffaf0;margin-bottom:10px;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.scr-pool{display:flex;flex-wrap:wrap;gap:6px;padding:10px;background:#f9f7f2;border-radius:10px;border:1px solid var(--border)}
+.chip{display:inline-block;padding:6px 13px;background:#fff;border:1.5px solid var(--border);border-radius:18px;cursor:pointer;font-weight:700;color:var(--pri-dk);font-size:.88rem;transition:all .15s;user-select:none}
+.chip:hover{background:var(--pri-lt);border-color:var(--pri);transform:translateY(-1px)}
+.empty-msg{color:#bbb;font-size:.85rem;font-style:italic}
+.wrt-area{width:100%;min-height:84px;padding:10px 12px;border:1.5px solid var(--border);border-radius:10px;font-size:.95rem;font-family:inherit;resize:vertical;line-height:1.7;background:#fdfbf7}
+.fb{margin-top:8px;font-size:.82rem;color:var(--sub)}
+.wc-lbl{font-size:.84rem;font-weight:700;color:var(--sub)}
+.draft-card{background:var(--card);border:1px solid var(--border);border-radius:20px;margin-top:14px;overflow:hidden}
+.draft-head h2{font-size:1rem;font-weight:800;color:var(--txt)}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <h1>✏️ 자기소개 수행평가 연습</h1>
+  <p>2026학년도 1학기 2학년 영어 1차 수행평가 — 신진과학기술고</p>
+</header>
+
+<div class="wrap">
+  <div class="score-banner">
+    <div class="sc-item"><div class="sc-label">① 내용 조건</div><div class="sc-val">10점</div><div class="sc-sub">항목 모두 포함 → A</div></div>
+    <div class="sc-item"><div class="sc-label">② 단어 수</div><div class="sc-val">10점</div><div class="sc-sub">80개 이상 → A</div></div>
+    <div class="sc-item hi"><div class="sc-label">총 배점</div><div class="sc-val">20점</div><div class="sc-sub">목표: 80단어+</div></div>
+  </div>
+
+  <div class="prog-card">
+    <div class="prog-top"><span>단계별 연습</span><span id="prog-txt">항목을 선택해주세요</span></div>
+    <div class="sdots" id="sdots"></div>
+  </div>
+
+  <div class="sect-card">
+    <div class="card-head">
+      <span class="sect-badge" id="sbadge">선택 모드</span>
+      <span class="sect-eval" id="seval">항목 구성</span>
+      <span class="sect-ttl" id="sttl">연습할 주제를 골라주세요</span>
+      <span class="done-badge" id="done-badge">✓ 완료</span>
+    </div>
+    <div class="stabs" id="stabs"></div>
+    <div class="sbody" id="sbody"></div>
+    <div class="stage-nav" style="display:none">
+      <button class="nbtn" id="btn-prev" onclick="prevSect()">◀ 이전</button>
+      <span class="stage-ind" id="sind">단계 1 / 3</span>
+      <button class="nbtn fwd" id="btn-next" onclick="nextStep()">다음 단계 ▶</button>
+    </div>
+  </div>
+
+  <div class="wc-bar">
+    <span class="wc-lbl">총 단어 수:</span>
+    <span class="wc-num" id="wc-num">0</span>
+    <div class="wc-grade" id="wc-grade">E (6점)</div>
+  </div>
+
+  <div class="draft-card">
+    <div class="draft-head" style="display:flex; justify-content:space-between; align-items:flex-end; padding:14px 17px;">
+      <h2>📝 최종 초안 작성</h2>
+      <button class="abtn abtn-g" onclick="copyDraft()">📋 전체 복사</button>
+    </div>
+    <div class="draft-body" id="draft-body" style="padding:18px 17px;"></div>
+    <div class="summary" id="summary">
+      <h2>🎉 모든 연습 완료!</h2>
+      <button class="rst-btn" onclick="location.reload()" style="margin-top:14px; padding:11px 26px; background:var(--pri); color:#fff; border:none; border-radius:30px; cursor:pointer;">🔄 처음부터 다시</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ── 데이터 구조 ── */
+const _chipify = (text) => {
+  const ws = text.split(" ");
+  return [...ws.slice(0, -1), ws[ws.length - 1] + "."];
+};
+
+const mkPer = (id, ttl, a1, a2, k1, k2) => ({
+  id, ttl, starter: "Hello, I am",
+  ko: `저는 <b>${k1}</b> <b>${k2}</b>.`,
+  en: `I am ${a1} and ${a2}.`,
+  enD: `I am <span class="bw">${a1}</span> and <span class="bw">${a2}</span>.`,
+  tip: "성격 형용사 2개를 넣어 소개합니다.",
+  fill: { parts: ["I am ", { b: a1, ph: "성격1" }, " and ", { b: a2, ph: "성격2" }, "."] },
+  scr: { w: ["I", "am", a1, "and", a2 + "."], a: ["I", "am", a1, "and", a2 + "."] },
+  re: new RegExp(`i\\s+am\\s+${a1}\\s+and\\s+${a2}`, "i")
+});
+
+const mkHob = (id, ttl, phrase, koPhrase) => {
+  const ws = phrase.split(" ");
+  const scrW = ["I", "enjoy", ..._chipify(phrase)];
+  return {
+    id, ttl, starter: "In my free time,",
+    ko: `저는 <b>${koPhrase}</b>을 즐깁니다.`,
+    en: `I enjoy ${phrase}.`,
+    enD: `I enjoy <span class="bw">${phrase}</span>.`,
+    tip: "enjoy ~ing 표현을 연습합니다.",
+    fill: { parts: ["I enjoy ", { b: phrase, ph: "취미" }, "."] },
+    scr: { w: scrW, a: scrW },
+    re: new RegExp(`enjoy\\s+${ws[0]}`, "i")
+  };
+};
+
+const mkGoal = (job, koJob) => {
+  const art = /^[aeiou]/i.test(job) ? "an" : "a";
+  return {
+    eval: "③ 목표", ttl: koJob, starter: "I want to become",
+    ko: `저는 ${koJob}가 되고 싶습니다.`,
+    en: `I want to become ${art} ${job}.`,
+    enD: `I want to become ${art} <span class="bw">${job}</span>.`,
+    tip: "직업 목표를 말합니다.",
+    fill: { parts: [`I want to become ${art} `, { b: job, ph: "직업" }, "."] },
+    scr: { w: ["I", "want", "to", "become", art, ..._chipify(job)], a: ["I", "want", "to", "become", art, ..._chipify(job)] },
+    re: /want\s+to\s+become/i
+  };
+};
+
+const mkEffort = (koTtl, effortEn, effortKo) => ({
+  eval: "④ 노력", ttl: koTtl, starter: "To accomplish...",
+  ko: `${effortKo}.`,
+  en: `I will try to ${effortEn}.`,
+  enD: `I will try to <span class="bw">${effortEn}</span>.`,
+  tip: "노력을 표현합니다.",
+  fill: { parts: ["I will try to ", { b: effortEn, ph: "노력" }, "."] },
+  scr: { w: ["I", "will", "try", "to", ..._chipify(effortEn)], a: ["I", "will", "try", "to", ..._chipify(effortEn)] },
+  re: /will\s+try\s+to/i
+});
+
+const mkAchieve = (koTtl, achEn, achKo) => ({
+  eval: "⑤ 성과", ttl: koTtl, starter: "Someday,",
+  ko: `${achKo}.`,
+  en: `Someday, I will ${achEn}.`,
+  enD: `Someday, I will <span class="bw">${achEn}</span>.`,
+  tip: "미래 성과를 강조합니다.",
+  fill: { parts: ["Someday, I will ", { b: achEn, ph: "성과" }, "."] },
+  scr: { w: ["Someday,", "I", "will", ..._chipify(achEn)], a: ["Someday,", "I", "will", ..._chipify(achEn)] },
+  re: /someday/i
+});
+
+const mkPath = (id, ttl, job, koJob, eTtl, eEn, eKo, aTtl, aEn, aKo) => ({
+  id, ttl,
+  pathData: [mkGoal(job, koJob), mkEffort(eTtl, eEn, eKo), mkAchieve(aTtl, aEn, aKo)]
+});
+
+const MASTER_POOL = [
+  {
+    category: "① 성격 및 소개",
+    options: [
+      mkPer("0-1", "창의적/성실", "creative", "diligent", "창의적이고", "성실합니다"),
+      mkPer("0-2", "외향적/친근", "outgoing", "friendly", "외향적이고", "친근합니다"),
+      mkPer("0-3", "조용한/사려깊은", "quiet", "thoughtful", "조용하고", "사려깊습니다"),
+      mkPer("0-4", "열정적/긍정적", "passionate", "positive", "열정적이고", "긍정적입니다"),
+      mkPer("0-5", "정직/책임감", "honest", "responsible", "정직하고", "책임감이 있습니다"),
+      mkPer("0-6", "유머/사교적", "humorous", "sociable", "유머러스하고", "사교적입니다"),
+      mkPer("0-7", "차분/인내심", "calm", "patient", "차분하고", "인내심이 많습니다"),
+      mkPer("0-8", "호기심/모험적", "curious", "adventurous", "호기심이 많고", "모험적입니다"),
+      mkPer("0-9", "친절/관대", "kind", "generous", "친절하고", "관대합니다"),
+      mkPer("0-10", "자신감/독립적", "confident", "independent", "자신감 있고", "독립적입니다"),
+      mkPer("0-11", "똑똑/근면", "smart", "hardworking", "똑똑하고", "근면합니다"),
+      mkPer("0-12", "용감/솔직", "brave", "honest", "용감하고", "솔직합니다"),
+    ]
+  },
+  {
+    category: "② 관심사 및 취미",
+    options: [
+      mkHob("1-1", "음악 감상", "listening to music", "음악 듣는 것"),
+      mkHob("1-2", "게임하기", "playing games", "게임하는 것"),
+      mkHob("1-3", "운동하기", "playing sports", "운동하는 것"),
+      mkHob("1-4", "독서", "reading books", "책 읽는 것"),
+      mkHob("1-5", "영화 감상", "watching movies", "영화 보는 것"),
+      mkHob("1-6", "요리", "cooking delicious food", "요리하는 것"),
+      mkHob("1-7", "그림 그리기", "drawing pictures", "그림 그리는 것"),
+      mkHob("1-8", "여행", "traveling to new places", "새로운 곳을 여행하는 것"),
+      mkHob("1-9", "사진 찍기", "taking beautiful photos", "멋진 사진 찍는 것"),
+      mkHob("1-10", "춤추기", "dancing with friends", "친구들과 춤추는 것"),
+      mkHob("1-11", "노래 부르기", "singing pop songs", "팝송 부르는 것"),
+      mkHob("1-12", "웹툰", "reading webtoons online", "웹툰 보는 것"),
+      mkHob("1-13", "축구", "playing soccer outside", "밖에서 축구하는 것"),
+      mkHob("1-14", "농구", "playing basketball with friends", "친구들과 농구하는 것"),
+      mkHob("1-15", "코딩", "coding small projects", "작은 프로젝트 코딩하는 것"),
+      mkHob("1-16", "반려동물", "playing with my dog", "반려견과 노는 것"),
+    ]
+  },
+  {
+    category: "③~⑤ 진로 패키지",
+    options: [
+      mkPath("path-chef", "요리사 길", "chef", "요리사",
+        "레시피 연습", "practice various recipes", "다양한 레시피를 연습할 것입니다",
+        "식당 개업", "open my own restaurant", "나만의 식당을 열 것입니다"),
+      mkPath("path-dev", "개발자 길", "developer", "개발자",
+        "매일 코딩", "practice coding every night", "매일 밤 코딩을 연습할 것입니다",
+        "앱 출시", "build a great app", "훌륭한 앱을 만들 것입니다"),
+      mkPath("path-teacher", "교사 길", "teacher", "선생님",
+        "교육학 공부", "study teaching methods hard", "교육학을 열심히 공부할 것입니다",
+        "학생 지도", "inspire many young students", "많은 학생에게 영감을 줄 것입니다"),
+      mkPath("path-doctor", "의사 길", "doctor", "의사",
+        "의학 공부", "study medicine every day", "매일 의학을 공부할 것입니다",
+        "생명 구하기", "save many precious lives", "많은 소중한 생명을 구할 것입니다"),
+      mkPath("path-designer", "디자이너 길", "designer", "디자이너",
+        "디자인 연습", "practice design skills daily", "매일 디자인 실력을 연마할 것입니다",
+        "작품 제작", "create beautiful design works", "아름다운 디자인 작품을 만들 것입니다"),
+      mkPath("path-engineer", "엔지니어 길", "engineer", "엔지니어",
+        "수학/과학", "study math and science", "수학과 과학을 공부할 것입니다",
+        "발명", "invent useful new machines", "유용한 새 기계를 발명할 것입니다"),
+      mkPath("path-scientist", "과학자 길", "scientist", "과학자",
+        "실험 연구", "research deeply every day", "매일 깊이 연구할 것입니다",
+        "새 발견", "discover something completely new", "완전히 새로운 것을 발견할 것입니다"),
+      mkPath("path-artist", "예술가 길", "artist", "예술가",
+        "매일 연습", "practice painting every morning", "매일 아침 그림을 그릴 것입니다",
+        "전시회", "hold my own exhibition", "나만의 전시회를 열 것입니다"),
+      mkPath("path-athlete", "운동선수 길", "athlete", "운동선수",
+        "훈련", "train my body hard", "체력을 열심히 단련할 것입니다",
+        "금메달", "win the gold medal", "금메달을 딸 것입니다"),
+      mkPath("path-writer", "작가 길", "writer", "작가",
+        "매일 글쓰기", "write new stories daily", "매일 새로운 이야기를 쓸 것입니다",
+        "책 출간", "publish a famous book", "유명한 책을 출간할 것입니다"),
+      mkPath("path-youtuber", "유튜버 길", "YouTuber", "유튜버",
+        "콘텐츠 제작", "create fun contents daily", "매일 재미있는 콘텐츠를 만들 것입니다",
+        "구독자", "get many loyal subscribers", "많은 충성스러운 구독자를 얻을 것입니다"),
+      mkPath("path-police", "경찰관 길", "police officer", "경찰관",
+        "체력 단련", "train my mind and body", "정신과 체력을 단련할 것입니다",
+        "시민 보호", "protect our peaceful citizens", "평화로운 시민을 보호할 것입니다"),
+      mkPath("path-nurse", "간호사 길", "nurse", "간호사",
+        "간호 공부", "study nursing skills hard", "간호 기술을 열심히 공부할 것입니다",
+        "환자 돌봄", "help many sick patients", "많은 환자를 도울 것입니다"),
+      mkPath("path-firefighter", "소방관 길", "firefighter", "소방관",
+        "체력 훈련", "train my strong body", "튼튼한 몸을 단련할 것입니다",
+        "생명 구조", "rescue people from danger", "위험에서 사람들을 구할 것입니다"),
+      mkPath("path-pilot", "파일럿 길", "pilot", "파일럿",
+        "영어/조종", "study English and flying", "영어와 비행을 공부할 것입니다",
+        "세계 비행", "fly all around the world", "세계를 누빌 것입니다"),
+      mkPath("path-vet", "수의사 길", "veterinarian", "수의사",
+        "동물 공부", "study animals every day", "매일 동물을 공부할 것입니다",
+        "동물 치료", "heal many sick animals", "많은 아픈 동물을 치료할 것입니다"),
+    ]
+  }
+];
+
+/* ── 상태 관리 ── */
+let selectedOptions = [null, null, null]; 
+let activeSecs = []; 
+let ST = []; 
+let cur = 0; 
+let isMenuMode = true;
+
+function init(){ renderDots(); renderCard(); }
+
+function toggleSelect(catIdx, optIdx) {
+  selectedOptions[catIdx] = (selectedOptions[catIdx] === optIdx) ? null : optIdx;
+  renderCard();
+}
+
+function startPractice() {
+  if (selectedOptions.includes(null)) { alert("모든 항목에서 주제를 하나씩 골라주세요!"); return; }
+  activeSecs = [
+    MASTER_POOL[0].options[selectedOptions[0]],
+    MASTER_POOL[1].options[selectedOptions[1]],
+    ...MASTER_POOL[2].options[selectedOptions[2]].pathData
+  ];
+  ST = activeSecs.map(() => ({ stage: 0, done: [false, false, false] }));
+  cur = 0; isMenuMode = false;
+  buildDraft(); renderDots(); renderCard();
+}
+
+function renderDots(){
+  const sdots = document.getElementById('sdots');
+  if(isMenuMode) { sdots.innerHTML = ""; return; }
+  sdots.innerHTML = activeSecs.map((s, i) => {
+    const cls = ST[i].done.every(Boolean) ? 'done' : i === cur ? 'active' : '';
+    return `<div class="sdot ${cls}" onclick="cur=${i};renderCard();renderDots();"><div class="dot-c">${i+1}</div></div>`;
+  }).join('');
+}
+
+function renderCard() {
+  const body = document.getElementById('sbody');
+  if (isMenuMode) {
+    document.querySelector('.stage-nav').style.display = "none";
+    const picked = selectedOptions.filter(v => v !== null).length;
+    body.innerHTML = `<div class="menu-guide">💡 각 카테고리에서 원하는 주제를 <b>하나씩</b> 선택하세요. 여러 선택지 중 자기에게 어울리는 것을 고르면 됩니다! (${picked}/3 선택됨)</div>` +
+      MASTER_POOL.map((cat, cIdx) => `
+      <div class="opt-grp">
+        <div class="opt-grp-ttl">${cat.category} <span style="color:${selectedOptions[cIdx]!==null?'var(--ok)':'#bbb'};font-size:.78rem;margin-left:4px;">${selectedOptions[cIdx]!==null?'✓ 선택됨':'선택 필요'}</span></div>
+        <div class="opt-wrap">
+          ${cat.options.map((opt, oIdx) => `<button class="abtn ${selectedOptions[cIdx]===oIdx?'abtn-p':'abtn-s'}" onclick="toggleSelect(${cIdx}, ${oIdx})">${opt.ttl}</button>`).join('')}
+        </div>
+      </div>`).join('') + `<button class="abtn abtn-g" style="width:100%; padding:15px; margin-top:8px;" onclick="startPractice()">🚀 연습 시작하기</button>`;
+    return;
+  }
+  document.querySelector('.stage-nav').style.display = "flex";
+  const s = activeSecs[cur], st = ST[cur];
+  document.getElementById('sbadge').textContent = `섹션 ${cur+1}`;
+  document.getElementById('seval').textContent = s.eval || "";
+  document.getElementById('sttl').textContent = s.ttl;
+  document.getElementById('stabs').innerHTML = ['이해','연습','완성'].map((l,i)=>`<button class="stab s${i+1} ${i===st.stage?'on':''} ${st.done[i]?'ck':''}" onclick="ST[cur].stage=${i};renderCard();">${l}</button>`).join('');
+  
+  if(st.stage===0) body.innerHTML = `<div class="lrn-ko">${s.ko}</div><div class="lrn-en">${s.enD}</div><div class="tip-box">💡 ${s.tip}</div>`;
+  else if(st.stage===1) renderPractice(s, cur, body);
+  else renderWrite(s, cur, body);
+}
+
+function renderPractice(s, idx, body){
+  let fl = `<div class="fill-line">`;
+  s.fill.parts.forEach((p,j)=> fl += (typeof p==='string' ? p : `<input class="binp" id="bi-${idx}-${j}" oninput="chkFill(${idx})">`));
+  body.innerHTML = fl + `</div><div class="scr-ans" id="sa-${idx}"><span class="empty-msg">단어를 클릭하세요</span></div><div class="scr-pool" id="sp-${idx}"></div>`;
+  const pool = document.getElementById(`sp-${idx}`);
+  [...s.scr.w].sort(()=>Math.random()-0.5).forEach(w => {
+    const c = document.createElement('span'); c.className='chip'; c.textContent=w;
+    c.onclick=()=>{ document.getElementById(`sa-${idx}`).appendChild(c); if(document.getElementById(`sa-${idx}`).querySelector('.empty-msg')) document.getElementById(`sa-${idx}`).querySelector('.empty-msg').remove(); chkScr(idx); };
+    pool.appendChild(c);
+  });
+}
+
+function chkFill(idx){
+  let ok = true;
+  activeSecs[idx].fill.parts.forEach((p,j)=>{ if(typeof p!=='string'){ const v = document.getElementById(`bi-${idx}-${j}`).value; if(v.toLowerCase().trim()!==p.b.toLowerCase()) ok=false; }});
+  if(ok) { ST[idx].done[1]=true; renderDots(); renderCard(); }
+}
+
+function chkScr(idx){
+  const ws = Array.from(document.getElementById(`sa-${idx}`).querySelectorAll('.chip')).map(c=>c.textContent);
+  if(ws.join(' ') === activeSecs[idx].scr.a.join(' ')){ ST[idx].done[1]=true; renderDots(); renderCard(); }
+}
+
+function renderWrite(s, idx, body){
+  body.innerHTML = `<textarea class="wrt-area" id="wt-${idx}" oninput="chkWrite(${idx})"></textarea><div class="fb" id="wfb-${idx}"></div>`;
+}
+
+function chkWrite(idx){
+  if(activeSecs[idx].re.test(document.getElementById(`wt-${idx}`).value)){ ST[idx].done[2]=true; renderDots(); renderCard(); }
+}
+
+function nextStep(){ if(ST[cur].stage<2) ST[cur].stage++; else if(cur<activeSecs.length-1) cur++; else document.getElementById('summary').style.display="block"; renderCard(); renderDots(); }
+function prevSect(){ if(ST[cur].stage>0) ST[cur].stage--; else if(cur>0) cur--; else isMenuMode=true; renderCard(); renderDots(); }
+
+function buildDraft(){ document.getElementById('draft-body').innerHTML = activeSecs.map((s,i)=>`<textarea class="ds-area" id="da-${i}" oninput="updWC()" placeholder="${s.en}"></textarea>`).join(''); }
+
+function updWC(){
+  let tot = 0; activeSecs.forEach((_,i)=>tot+=document.getElementById(`da-${i}`).value.split(/\s+/).filter(w=>w).length);
+  document.getElementById('wc-num').textContent = tot;
+  document.getElementById('wc-grade').textContent = tot>=80 ? 'A (10점)' : 'E (6점)';
+  document.getElementById('wc-grade').className = `wc-grade ${tot>=80?'wc-A':'wc-E'}`;
+}
+
+function copyDraft(){ navigator.clipboard.writeText(activeSecs.map((_,i)=>document.getElementById(`da-${i}`).value).join(' ')); alert('복사되었습니다!'); }
+
+init();
+</script>
+</body>
+</html>
